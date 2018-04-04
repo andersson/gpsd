@@ -1744,6 +1744,7 @@ extern const struct gps_type_t driver_geostar;
 extern const struct gps_type_t driver_italk;
 extern const struct gps_type_t driver_navcom;
 extern const struct gps_type_t driver_nmea2000;
+extern const struct gps_type_t driver_pds;
 extern const struct gps_type_t driver_oncore;
 extern const struct gps_type_t driver_sirf;
 extern const struct gps_type_t driver_skytraq;
@@ -1837,6 +1838,10 @@ static const struct gps_type_t *gpsd_driver_array[] = {
 #ifdef NMEA2000_ENABLE
     &driver_nmea2000,
 #endif /* NMEA2000_ENABLE */
+
+#ifdef PDS_ENABLE
+    &driver_pds,
+#endif /* PDS_ENABLE */
 
 #ifdef RTCM104V2_ENABLE
     &driver_rtcm104v2,

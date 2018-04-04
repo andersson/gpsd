@@ -155,6 +155,7 @@ boolopts = (
     ("ublox",         True,  "u-blox Protocol support"),
     ("fury",          True,  "Jackson Labs Fury and Firefly support"),
     ("nmea2000",      True,  "NMEA2000/CAN support"),
+    ("pds",           True,  "Qualcomm PDS support"),
     # Non-GPS protocols
     ("aivdm",         True,  "AIVDM support"),
     ("gpsclock",      True,  "GPSClock support"),
@@ -778,6 +779,14 @@ else:
         announce("You do not have kernel CANbus available.")
         env["nmea2000"] = False
 
+    if config.CheckHeader(["bits/sockaddr.h", "linux/qrtr.h"]):
+        confdefs.append("#define HAVE_LINUX_QRTR_H 1\n")
+        announce("You have kernel QRTR available.")
+    else:
+        confdefs.append("/* #undef HAVE_LINUX_QRTR_H */\n")
+        announce("You do not have kernel QRTR available.")
+        env["pds"] = False
+
     # check for C11 or better, and __STDC__NO_ATOMICS__ is not defined
     # before looking for stdatomic.h
     if ((config.CheckC11()
@@ -1121,6 +1130,7 @@ libgpsd_sources = [
     "driver_nmea0183.c",
     "driver_nmea2000.c",
     "driver_oncore.c",
+    "driver_pds.c",
     "driver_rtcm2.c",
     "driver_rtcm3.c",
     "driver_sirf.c",

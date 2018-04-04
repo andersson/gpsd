@@ -163,12 +163,13 @@ struct gps_lexer_t {
 #define ONCORE_PACKET   	13
 #define GEOSTAR_PACKET   	14
 #define NMEA2000_PACKET 	15
-#define MAX_GPSPACKET_TYPE	15	/* increment this as necessary */
-#define RTCM2_PACKET    	16
-#define RTCM3_PACKET    	17
-#define JSON_PACKET    	    	18
-#define PACKET_TYPES		19	/* increment this as necessary */
-#define SKY_PACKET     		20
+#define QMI_PDS_PACKET		16
+#define MAX_GPSPACKET_TYPE	16	/* increment this as necessary */
+#define RTCM2_PACKET    	17
+#define RTCM3_PACKET    	18
+#define JSON_PACKET    	    	19
+#define PACKET_TYPES		20	/* increment this as necessary */
+#define SKY_PACKET     		21
 #define TEXTUAL_PACKET_TYPE(n)	((((n)>=NMEA_PACKET) && ((n)<=MAX_TEXTUAL_TYPE)) || (n)==JSON_PACKET)
 #define GPS_PACKET_TYPE(n)	(((n)>=NMEA_PACKET) && ((n)<=MAX_GPSPACKET_TYPE))
 #define LOSSLESS_PACKET_TYPE(n)	(((n)>=RTCM2_PACKET) && ((n)<=RTCM3_PACKET))
@@ -411,6 +412,7 @@ typedef enum {source_unknown,
 	      source_usb,	/* potential GPS source, discoverable */
 	      source_bluetooth,	/* potential GPS source, discoverable */
 	      source_can,	/* potential GPS source, fixed CAN format */
+	      source_qrtr,	/* potential GPS source, discoverable */
 	      source_pty,	/* PTY: we don't require exclusive access */
 	      source_tcp,	/* TCP/IP stream: case detected but not used */
 	      source_udp,	/* UDP stream: case detected but not used */

@@ -48,6 +48,9 @@
 #if defined(NMEA2000_ENABLE)
 #include "driver_nmea2000.h"
 #endif /* defined(NMEA2000_ENABLE) */
+#if defined(PDS_ENABLE)
+#include "driver_pds.h"
+#endif /* defined(PDS_ENABLE) */
 
 ssize_t gpsd_write(struct gps_device_t *session,
 		   const char *buf,
@@ -366,6 +369,11 @@ void gpsd_deactivate(struct gps_device_t *session)
         (void)nmea2000_close(session);
     else
 #endif /* of defined(NMEA2000_ENABLE) */
+#if defined(PDS_ENABLE)
+    if (session->sourcetype == source_qrtr)
+	(void)qmi_pds_close(session);
+    else
+#endif /* of defined(PDS_ENABLE) */
         (void)gpsd_close(session);
     if (session->mode == O_OPTIMIZE)
 	gpsd_run_device_hook(&session->context->errout,
@@ -547,6 +555,11 @@ int gpsd_open(struct gps_device_t *session)
         return nmea2000_open(session);
     }
 #endif /* defined(NMEA2000_ENABLE) */
+#if defined(PDS_ENABLE)
+    if (str_starts_with(session->gpsdata.dev.path, "pds://")) {
+	    return qmi_pds_open(session);
+    }
+#endif /* defined(PDS_ENABLE) */
     /* fall through to plain serial open */
     /* could be a naked /dev/ppsX */
     return gpsd_serial_open(session);
@@ -575,7 +588,7 @@ int gpsd_activate(struct gps_device_t *session, const int mode)
 #ifdef NON_NMEA0183_ENABLE
     /* if it's a sensor, it must be probed */
     if ((session->servicetype == service_sensor) &&
-	(session->sourcetype != source_can)) {
+	(session->sourcetype != source_can && session->sourcetype != source_qrtr)) {
 	const struct gps_type_t **dp;
 
 	for (dp = gpsd_drivers; *dp; dp++) {
